@@ -1,0 +1,51 @@
+plugins {
+	id 'application'
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+application {
+	mainClass = 'hexlet.code.app.AppApplication'
+}
+
+group = 'hexlet.code'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+	}
+}
+
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+compileJava {
+	options.release = 17
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+task stage(dependsOn: ['clean', 'installDist'])
+installDist.mustRunAfter clean
