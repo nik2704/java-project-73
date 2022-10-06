@@ -15,6 +15,9 @@ run-dist:
 start:
 	make -C app start
 
+start-prod:
+	make -C app start-prod
+
 test:
 	make -C app test
 
@@ -27,6 +30,8 @@ lint:
 update-deps:
 	make -C app update-deps
 
+generate-migrations:
+	make -C app generate-migrations
 
 build-run: build run
 
