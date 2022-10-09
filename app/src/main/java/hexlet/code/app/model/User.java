@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.GenerationType;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
@@ -39,7 +38,6 @@ public class User {
     private String lastName;
 
     @Column(unique = true)
-    @Email
     private String email;
 
     @NotBlank
