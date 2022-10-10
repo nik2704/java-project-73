@@ -1,6 +1,5 @@
 package hexlet.code.app.service;
 
-
 import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;

@@ -2,6 +2,9 @@ package hexlet.code.app.config.security;
 
 
 import hexlet.code.app.component.JWTHelper;
+
+import java.util.List;
+
 import hexlet.code.app.filter.JWTAuthenticationFilter;
 import hexlet.code.app.filter.JWTAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,11 +24,10 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.List;
-
 import static hexlet.code.app.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+
 
 @Configuration
 @EnableWebSecurity
@@ -46,11 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                           final UserDetailsService userDetailsServiceValue,
                           final PasswordEncoder passwordEncoderValue, final JWTHelper jwtHelperValue) {
         this.loginRequest = new AntPathRequestMatcher(baseUrl + LOGIN, POST.toString());
+        System.out.println("URL ----------> " + baseUrl + LOGIN);
         this.publicUrls = new OrRequestMatcher(
                 loginRequest,
                 new AntPathRequestMatcher(baseUrl + USER_CONTROLLER_PATH, POST.toString()),
                 new AntPathRequestMatcher(baseUrl + USER_CONTROLLER_PATH, GET.toString()),
-                new AntPathRequestMatcher(baseUrl + USER_CONTROLLER_PATH + "/*", GET.toString()), // DELETE
                 new NegatedRequestMatcher(new AntPathRequestMatcher(baseUrl + "/**"))
         );
         this.userDetailsService = userDetailsServiceValue;
@@ -99,6 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().disable();
 
         http.headers().frameOptions().disable();
+
     }
 
 }
