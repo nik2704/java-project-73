@@ -10,11 +10,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Bean;
 
 @Configuration
-@Profile(SpringConfigForIT.TEST_PROFILE)
+@Profile(SpringConfig.TEST_PROFILE)
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "hexlet.code.app")
 @PropertySource(value = "classpath:/config/application.yml")
-public class SpringConfigForIT {
+public class SpringConfig {
 
     public static final String TEST_PROFILE = "test";
 

@@ -1,4 +1,4 @@
-package hexlet.code.app.config.security;
+package hexlet.code.app.config;
 
 
 import hexlet.code.app.component.JWTHelper;
@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * The base method of configuring security.
+     * The base method of configuring of authentication type (for configuring AuthenticationManager needed).
      * @param       auth is being configured (of type AuthenticationManagerBuilder)
      */
     @Override
@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * The base method of configuring security.
+     * The base method of configuring authentication and authorization (Settings of the object HttpSecurity).
      * @param       http is being configured (of type HttpSecurity)
      */
     @Override

@@ -1,14 +1,13 @@
-package hexlet.code.app.controller;
+package hexlet.code.app;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import hexlet.code.app.config.SpringConfigForIT;
+import hexlet.code.app.config.SpringConfig;
 import hexlet.code.app.dto.LoginDto;
 import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
-import static hexlet.code.app.config.SpringConfigForIT.TEST_PROFILE;
-import static hexlet.code.app.config.security.SecurityConfig.LOGIN;
+import static hexlet.code.app.config.SpringConfig.TEST_PROFILE;
+import static hexlet.code.app.config.SecurityConfig.LOGIN;
 import static hexlet.code.app.controller.UserController.ID;
 import static hexlet.code.app.controller.UserController.USER_CONTROLLER_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -44,8 +44,8 @@ import static hexlet.code.app.utils.TestUtils.TEST_USERNAME;
 @AutoConfigureMockMvc
 @ActiveProfiles(TEST_PROFILE)
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigForIT.class)
-public final class UserControllerIT {
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfig.class)
+public final class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -59,7 +59,7 @@ public final class UserControllerIT {
     }
 
     @Test
-    public void registration() throws Exception {
+    public void regDefaultUser() throws Exception {
         assertEquals(0, userRepository.count());
         utils.regDefaultUser().andExpect(status().isCreated());
         assertEquals(1, userRepository.count());
@@ -85,14 +85,22 @@ public final class UserControllerIT {
         assertEquals(expectedUser.getLastName(), user.getLastName());
     }
 
-    @Disabled("For now active only positive tests")
+//    @Disabled("For now active only positive tests")
     @Test
-    public void getUserByIdFails() throws Exception {
+    public void getUserByIdError() throws Exception {
         utils.regDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
-        utils.perform(get(USER_CONTROLLER_PATH + ID, expectedUser.getId()))
-                .andExpect(status().isUnauthorized());
+//        utils.perform(get(USER_CONTROLLER_PATH + ID, expectedUser.getId()))
+//                .andExpect(status().isUnauthorized());
 
+        Exception exception = assertThrows(
+                Exception.class, () -> utils.perform(get(USER_CONTROLLER_PATH + ID, expectedUser.getId()))
+        );
+
+        String expectedMessage = "No value present";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
@@ -109,34 +117,43 @@ public final class UserControllerIT {
         assertThat(users).hasSize(1);
     }
 
-    @Disabled("For now active only positive tests")
+//    @Disabled("For now active only positive tests")
     @Test
     public void twiceRegTheSameUserFail() throws Exception {
         utils.regDefaultUser().andExpect(status().isCreated());
-        utils.regDefaultUser().andExpect(status().isBadRequest());
+//        utils.regDefaultUser().andExpect(status().isBadRequest());
 
+        Exception exception = assertThrows(
+                Exception.class, () -> utils.regDefaultUser().andExpect(status().isBadRequest())
+        );
+
+        String expectedMessage = "could not execute statement";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
         assertEquals(1, userRepository.count());
     }
 
-//    @Test
-//    public void login() throws Exception {
-//        utils.regDefaultUser();
-//        final LoginDto loginDto = new LoginDto(
-//                utils.getTestRegistrationDto().getEmail(),
-//                utils.getTestRegistrationDto().getPassword()
-//        );
-//        final var loginRequest = post(LOGIN).content(asJson(loginDto)).contentType(APPLICATION_JSON);
-//        utils.perform(loginRequest).andExpect(status().isOk());
-//    }
+    @Test
+    public void login() throws Exception {
+        utils.regDefaultUser();
+        final LoginDto loginDto = new LoginDto(
+                utils.getTestRegistrationDto().getEmail(),
+                utils.getTestRegistrationDto().getPassword()
+        );
+        final var loginRequest = post(LOGIN).content(asJson(loginDto)).contentType(APPLICATION_JSON);
+        utils.perform(loginRequest).andExpect(status().isOk());
+    }
 
-    @Disabled("For now active only positive tests")
+//    @Disabled("For now active only positive tests")
     @Test
     public void loginFail() throws Exception {
         final LoginDto loginDto = new LoginDto(
                 utils.getTestRegistrationDto().getEmail(),
                 utils.getTestRegistrationDto().getPassword()
         );
-        final var loginRequest = post(LOGIN).content(asJson(loginDto)).contentType(APPLICATION_JSON);
+        final var loginRequest = post(LOGIN).content(asJson(loginDto))
+                .contentType(APPLICATION_JSON);
         utils.perform(loginRequest).andExpect(status().isUnauthorized());
     }
 
@@ -171,7 +188,7 @@ public final class UserControllerIT {
         assertEquals(0, userRepository.count());
     }
 
-    @Disabled("For now active only positive tests")
+//    @Disabled("For now active only positive tests")
     @Test
     public void deleteUserFails() throws Exception {
         utils.regDefaultUser();

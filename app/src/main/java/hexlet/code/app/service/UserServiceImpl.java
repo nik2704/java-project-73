@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static hexlet.code.app.config.security.SecurityConfig.DEFAULT_AUTHORITIES;
+import static hexlet.code.app.config.SecurityConfig.DEFAULT_AUTHORITIES;
 
 
 @Service
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     /**
      * The base method of adding resource handlers.
      * @param       username - name of a user
-     * @return       system userDetails object
+     * @return       system userDetails object (the user is found in the repository and mapped to)
      */
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     /**
      * The base method of adding resource handlers.
      * @param       user - object User
-     * @return       system userDetails object
+     * @return       system userDetails object (with authorities defined in DEFAULT_AUTHORITIES)
      */
     private UserDetails buildSpringUser(final User user) {
         return new org.springframework.security.core.userdetails.User(
