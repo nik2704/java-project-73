@@ -9,5 +9,5 @@
 
 # **Менеджер задач**
 
-### Для просмотра работы приложения (Heroku) можно перейти по [ссылке](https://secure-springs-98243.herokuapp.com/welcome).
+### Для просмотра работы приложения (Heroku) можно перейти по [ссылке](https://stark-oasis-25503.herokuapp.com/).
 
