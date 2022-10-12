@@ -106,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(publicUrls).permitAll()
-                .requestMatchers(authenticatedUrls).hasAnyAuthority()
+                .requestMatchers(authenticatedUrls).authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(authenticationFilter)
