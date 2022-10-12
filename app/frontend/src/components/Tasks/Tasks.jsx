@@ -42,9 +42,9 @@ const Tasks = () => {
       dispatch(taskActions.removeTask((id)));
       notify.addMessage('taskRemoved');
     } catch (e) {
-      if (e.response?.status === 403) {
+      if (e.response?.taskStatus === 403) {
         notify.addErrors([{ text: t('taskEditDenied') }]);
-      } else if (e.response?.status === 422) {
+      } else if (e.response?.taskStatus === 422) {
         notify.addError('taskRemoveFail');
       } else {
         handleError(e, notify, history, auth);
@@ -61,7 +61,7 @@ const Tasks = () => {
           <tr>
             <th>{t('id')}</th>
             <th>{t('naming')}</th>
-            <th>{t('status')}</th>
+            <th>{t('taskStatus')}</th>
             <th>{t('author')}</th>
             <th>{t('executor')}</th>
             <th>{t('createDate')}</th>

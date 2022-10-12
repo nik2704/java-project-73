@@ -1,4 +1,4 @@
-### Hexlet tests and linter status:
+### Hexlet tests and linter taskStatus:
 [![Actions Status](https://github.com/nik2704/java-project-73/workflows/hexlet-check/badge.svg)](https://github.com/nik2704/java-project-73/actions)
 
 ![Java CI](https://github.com/nik2704/java-project-73/actions/workflows/blank.yml/badge.svg)

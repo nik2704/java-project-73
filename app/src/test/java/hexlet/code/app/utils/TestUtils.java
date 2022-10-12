@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.Map;
 
-import static hexlet.code.app.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,6 +24,9 @@ public class TestUtils {
 
     public static final String TEST_USERNAME = "email@email.com";
     public static final String TEST_USERNAME_2 = "email2@email.com";
+    public static final String USER_CONTROLLER_PATH = "/api/users";
+    public static final String LOGIN = "/api/login";
+    public static final String ID = "/{id}";
 
     private final UserDto testRegistrationDto = new UserDto(
             TEST_USERNAME,
@@ -102,8 +104,9 @@ public class TestUtils {
      * @return       system userDetails object
      */
     public ResultActions perform(final MockHttpServletRequestBuilder request, final String byUser) throws Exception {
-        final String token = jwtHelper.expiring(Map.of("username", byUser));
-        request.header(AUTHORIZATION, token);
+        final String token = jwtHelper.expiring(Map.of("username", byUser, "password", "pwd"));
+
+        request.header(AUTHORIZATION, "Bearer " + token);
 
         return perform(request);
     }

@@ -87,7 +87,7 @@ const Task = () => {
           )}
           <Row>
             <Col>
-              {t('status')}
+              {t('taskStatus')}
             </Col>
             <Col>
               {task.taskStatus.name}

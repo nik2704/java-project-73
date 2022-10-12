@@ -81,7 +81,7 @@ const TaskFilter = (props) => {
           <Row className="g-2">
             <Col md>
               <Form.Group className="mb-3">
-                <Form.Label htmlFor="taskStatusId">{t('status')}</Form.Label>
+                <Form.Label htmlFor="taskStatusId">{t('taskStatus')}</Form.Label>
                 <Form.Select
                   nullable
                   value={f.values.taskStatusId}
@@ -93,9 +93,9 @@ const TaskFilter = (props) => {
                   name="taskStatusId"
                 >
                   <option value="">{null}</option>
-                  {taskStatuses.map((status) => (
-                    <option key={status.id} value={status.id}>
-                      {status.name}
+                  {taskStatuses.map((taskStatus) => (
+                    <option key={taskStatus.id} value={taskStatus.id}>
+                      {taskStatus.name}
                     </option>
                   ))}
                 </Form.Select>

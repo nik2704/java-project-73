@@ -33,18 +33,18 @@ const NewStatus = () => {
     },
     validationSchema: getValidationSchema(),
     onSubmit: async ({ name }, { setSubmitting, setErrors }) => {
-      const status = { name };
+      const taskStatus = { name };
       try {
-        log('status.create', status);
+        log('taskStatus.create', taskStatus);
         const { data } = await axios
-          .post(routes.apiStatuses(), status, { headers: auth.getAuthHeader() });
+          .post(routes.apiStatuses(), taskStatus, { headers: auth.getAuthHeader() });
         dispatch(taskStatusesActions.addTaskStatus(data));
         const from = { pathname: routes.statusesPagePath() };
         history.push(from, { message: 'statusCreated' });
       } catch (e) {
         log('label.create.error', e);
         setSubmitting(false);
-        if (e.response?.status === 422 && Array.isArray(e.response?.data)) {
+        if (e.response?.taskStatus === 422 && Array.isArray(e.response?.data)) {
           const errors = e.response.data
             .reduce((acc, err) => ({ ...acc, [err.field]: err.defaultMessage }), {});
           setErrors(errors);

@@ -32,7 +32,7 @@ const Statuses = () => {
       dispatch(actions.removeTaskStatus(id));
       notify.addMessage('statusRemoved');
     } catch (e) {
-      if (e.response?.status === 422) {
+      if (e.response?.taskStatus === 422) {
         notify.addError('taskStatusRemoveFail');
       } else {
         handleError(e, notify, history, auth);
@@ -52,14 +52,14 @@ const Statuses = () => {
           </tr>
         </thead>
         <tbody>
-          {taskStatuses.map((status) => (
-            <tr key={status.id}>
-              <td>{status.id}</td>
-              <td>{status.name}</td>
-              <td>{new Date(status.createdAt).toLocaleString('ru')}</td>
+          {taskStatuses.map((taskStatus) => (
+            <tr key={taskStatus.id}>
+              <td>{taskStatus.id}</td>
+              <td>{taskStatus.name}</td>
+              <td>{new Date(taskStatus.createdAt).toLocaleString('ru')}</td>
               <td>
-                <Link to={routes.statusEditPagePath(status.id)}>{t('edit')}</Link>
-                <Form onSubmit={(event) => removeStatus(event, status.id)}>
+                <Link to={routes.statusEditPagePath(taskStatus.id)}>{t('edit')}</Link>
+                <Form onSubmit={(event) => removeStatus(event, taskStatus.id)}>
                   <Button type="submit" variant="link">{t('remove')}</Button>
                 </Form>
               </td>

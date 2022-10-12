@@ -54,7 +54,7 @@ const EditStatus = () => {
       try {
         const { data } = await axios.put(routes.apiStatus(params.taskStatusId),
           newStatus, { headers: auth.getAuthHeader() });
-        log('status.edit', newStatus);
+        log('taskStatus.edit', newStatus);
 
         dispatch(taskStatusesActions.updateTaskStatus(data));
         const from = { pathname: routes.statusesPagePath() };
@@ -62,7 +62,7 @@ const EditStatus = () => {
       } catch (e) {
         log('label.edit.error', e);
         setSubmitting(false);
-        if (e.response?.status === 422 && Array.isArray(e.response?.data)) {
+        if (e.response?.taskStatus === 422 && Array.isArray(e.response?.data)) {
           const errors = e.response.data
             .reduce((acc, err) => ({ ...acc, [err.field]: err.defaultMessage }), {});
           setErrors(errors);

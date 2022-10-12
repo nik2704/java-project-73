@@ -66,7 +66,7 @@ const NewTask = () => {
       } catch (e) {
         log('task.create.error', e);
         setSubmitting(false);
-        if (e.response?.status === 422 && Array.isArray(e.response?.data)) {
+        if (e.response?.taskStatus === 422 && Array.isArray(e.response?.data)) {
           const errors = e.response.data
             .reduce((acc, err) => ({ ...acc, [err.field]: err.defaultMessage }), {});
           setErrors(errors);
@@ -120,7 +120,7 @@ const NewTask = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="taskStatusId">{t('status')}</Form.Label>
+          <Form.Label htmlFor="taskStatusId">{t('taskStatus')}</Form.Label>
           <Form.Select
             nullable
             value={f.values.taskStatusId}
@@ -133,7 +133,7 @@ const NewTask = () => {
           >
             <option value="">{null}</option>
             {taskStatuses
-              .map((status) => <option key={status.id} value={status.id}>{status.name}</option>)}
+              .map((taskStatus) => <option key={taskStatus.id} value={taskStatus.id}>{taskStatus.name}</option>)}
           </Form.Select>
           <Form.Control.Feedback type="invalid">
             {t(f.errors.taskStatusId)}

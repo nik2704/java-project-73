@@ -36,11 +36,11 @@ const Login = () => {
         const { from } = { from: { pathname: routes.homePagePath() } };
         history.push(from, { message: 'loginSuccess' });
       } catch (e) {
-        if (e.response?.status === 422 && Array.isArray(e.response.data)) {
+        if (e.response?.taskStatus === 422 && Array.isArray(e.response.data)) {
           const errors = e.response.data
             .reduce((acc, err) => ({ ...acc, [err.field]: err.defaultMessage }), {});
           setErrors(errors);
-        } else if (e.response?.status === 401) {
+        } else if (e.response?.taskStatus === 401) {
           notify.addErrors([{ text: 'loginFail' }]);
         } else {
           handleError(e, notify, history, auth);

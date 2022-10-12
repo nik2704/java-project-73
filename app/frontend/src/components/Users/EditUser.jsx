@@ -55,12 +55,12 @@ const EditUser = () => {
       } catch (e) {
         log('user.edit.error', e);
         setSubmitting(false);
-        if (e.response?.status === 422 && Array.isArray(e.response?.data)) {
+        if (e.response?.taskStatus === 422 && Array.isArray(e.response?.data)) {
           const errors = e.response.data
             .reduce((acc, err) => ({ ...acc, [err.field]: err.defaultMessage }), {});
           setErrors(errors);
           notify.addError('userEditFail');
-        } else if (e.response?.status === 403) {
+        } else if (e.response?.taskStatus === 403) {
           notify.addErrors([{ text: 'userDeleteDenied' }]);
         } else {
           handleError(e, notify, history);
