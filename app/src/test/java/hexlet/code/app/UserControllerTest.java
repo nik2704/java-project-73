@@ -145,7 +145,7 @@ public final class UserControllerTest {
     public void loginFail() throws Exception {
         final LoginDto loginDto = new LoginDto(
                 utils.getTestRegistrationDto().getEmail(),
-                utils.getTestRegistrationDto().getPassword()
+                "wrongpassword"
         );
         final var loginRequest = post(LOGIN).content(asJson(loginDto))
                 .contentType(APPLICATION_JSON);

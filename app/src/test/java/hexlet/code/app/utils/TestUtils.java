@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.component.JWTHelper;
 import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.model.User;
+import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class TestUtils {
     public static final String TEST_USERNAME = "email@email.com";
     public static final String TEST_USERNAME_2 = "email2@email.com";
     public static final String USER_CONTROLLER_PATH = "/api/users";
+    public static final String STATUS_CONTROLLER_PATH = "/api/statuses";
     public static final String LOGIN = "/api/login";
     public static final String ID = "/{id}";
 
@@ -49,6 +51,9 @@ public class TestUtils {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
 //    @Autowired
 //    private PostCommentRepository postCommentRepository;
 //
@@ -65,6 +70,7 @@ public class TestUtils {
 //        postCommentRepository.deleteAll();
 //        postRepository.deleteAll();
         userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
     }
 
     /**
