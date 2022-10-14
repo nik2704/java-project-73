@@ -11,8 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 
 @Service
 @Transactional
@@ -53,11 +51,11 @@ public class TaskServiceImpl implements TaskService {
         task.setName(taskDto.getName());
         task.setDescription(taskDto.getDescription());
         task.setTaskStatus(taskStatusRepository
-                .getById(taskDto.getTaskStatusId()));
+                .findById(taskDto.getTaskStatusId()).get());
 
-        if (!Objects.isNull(taskDto.getExecutorId())) {
+        if (taskDto.getExecutorId() > 0L) {
             task.setExecutor(userRepository
-                    .getById(taskDto.getExecutorId()));
+                    .findById(taskDto.getExecutorId()).get());
         }
 
         return taskRepository.save(task);
@@ -75,16 +73,17 @@ public class TaskServiceImpl implements TaskService {
         taskToUpdate.setDescription(taskDto.getDescription());
         taskToUpdate.setName(taskDto.getName());
 
-        if (!Objects.isNull(taskDto.getTaskStatusId())) {
-            taskToUpdate.setTaskStatus(taskStatusRepository
-                    .getById(taskDto.getTaskStatusId()));
+        taskToUpdate.setTaskStatus(taskStatusRepository
+                .findById(taskDto.getTaskStatusId()).get());
+
+
+        if (taskDto.getExecutorId() > 0L) {
+            taskToUpdate.setExecutor(userRepository
+                    .findById(taskDto.getExecutorId()).get());
+        } else {
+            taskToUpdate.setExecutor(null);
         }
 
-        if (!Objects.isNull(taskDto.getExecutorId())) {
-            taskToUpdate.setExecutor(userRepository
-                    .getById(taskDto.getExecutorId()));
-        }
         return taskRepository.save(taskToUpdate);
     }
-
 }

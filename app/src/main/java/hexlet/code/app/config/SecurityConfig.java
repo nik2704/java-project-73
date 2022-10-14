@@ -25,6 +25,7 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import static hexlet.code.app.controller.TaskController.TASK_CONTROLLER_PATH;
 import static hexlet.code.app.controller.TaskStatusController.STATUS_CONTROLLER_PATH;
 import static hexlet.code.app.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpMethod.GET;
@@ -67,7 +68,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", GET.toString()),
                 new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", POST.toString()),
                 new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", PUT.toString()),
-                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", DELETE.toString())
+                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", DELETE.toString()),
+
+                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", GET.toString()),
+                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", POST.toString()),
+                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", PUT.toString()),
+                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", DELETE.toString())
         );
 
         this.userDetailsService = userDetailsServiceValue;
