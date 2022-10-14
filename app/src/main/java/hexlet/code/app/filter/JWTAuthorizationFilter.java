@@ -37,7 +37,7 @@ public final class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
-                                    final HttpServletResponse response,
+                                    HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
 
         final var authToken = Optional.ofNullable(request.getHeader(AUTHORIZATION))
@@ -48,8 +48,7 @@ public final class JWTAuthorizationFilter extends OncePerRequestFilter {
                 .map(Object::toString)
                 .map(this::buildAuthToken)
                 .orElseThrow();
-
-
+//() -> new AccessDeniedException("Access denied")
         SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
     }

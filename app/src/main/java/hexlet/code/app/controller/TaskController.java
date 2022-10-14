@@ -59,9 +59,9 @@ public class TaskController {
      * Get lis of tasks.
      * @return      List of Tasks
      */
-    @ApiResponses(@ApiResponse(responseCode = "200", content =
-        @Content(schema = @Schema(implementation = Task.class))
-        ))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Task.class)))
+    })
     @GetMapping
     public List<Task> getAll() {
         return taskRepository.findAll()

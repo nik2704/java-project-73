@@ -9,7 +9,6 @@ import hexlet.code.app.filter.JWTAuthenticationFilter;
 import hexlet.code.app.filter.JWTAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-//import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -124,6 +123,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.headers().frameOptions().disable();
 
+//        http.exceptionHandling().accessDeniedHandler( (request, response, exception) ->
+//                response.sendError(HttpStatus.UNAUTHORIZED.value(), exception.getMessage()
+//                ));
     }
 
 }
