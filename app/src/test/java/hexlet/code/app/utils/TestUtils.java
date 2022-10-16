@@ -29,6 +29,8 @@ public class TestUtils {
     public static final String USER_CONTROLLER_PATH = "/api/users";
     public static final String STATUS_CONTROLLER_PATH = "/api/statuses";
     public static final String TASK_CONTROLLER_PATH = "/api/tasks";
+
+    public static final String LABEL_CONTROLLER_PATH = "/api/labels";
     public static final String LOGIN = "/api/login";
     public static final String ID = "/{id}";
 
@@ -74,7 +76,6 @@ public class TestUtils {
 //        postCommentRepository.deleteAll();
 //        postRepository.deleteAll();
         userRepository.deleteAll();
-        taskStatusRepository.deleteAll();
         taskRepository.deleteAll();
     }
 

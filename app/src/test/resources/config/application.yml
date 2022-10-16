@@ -11,8 +11,8 @@ spring:
       password:
     show-sql: true
     hibernate:
-#      ddl-auto: update
-      ddl-auto: create-drop
+      ddl-auto: update
+#      ddl-auto: create-drop
 
   liquibase:
     enabled: true

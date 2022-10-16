@@ -1,8 +1,10 @@
 package hexlet.code.app.service;
 
 import hexlet.code.app.dto.TaskDto;
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.model.User;
+import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
@@ -10,6 +12,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Service
@@ -19,6 +24,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+
+    private final LabelRepository labelRepository;
     private final TaskStatusRepository taskStatusRepository;
 
     /**
@@ -58,6 +65,12 @@ public class TaskServiceImpl implements TaskService {
                     .findById(taskDto.getExecutorId()).get());
         }
 
+        Set<Label> labelList = new HashSet<>();
+        for (long labelId : taskDto.getLabelIds()) {
+            labelList.add(labelRepository.findById(labelId).get());
+        }
+        task.setLabels(labelList);
+
         return taskRepository.save(task);
     }
 
@@ -83,6 +96,12 @@ public class TaskServiceImpl implements TaskService {
         } else {
             taskToUpdate.setExecutor(null);
         }
+
+        Set<Label> labelList = new HashSet<>();
+        for (long labelId : taskDto.getLabelIds()) {
+            labelList.add(labelRepository.findById(labelId).get());
+        }
+        taskToUpdate.setLabels(labelList);
 
         return taskRepository.save(taskToUpdate);
     }

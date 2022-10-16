@@ -1,11 +1,17 @@
 package hexlet.code.app;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import hexlet.code.app.config.SpringConfig;
 import hexlet.code.app.dto.LoginDto;
+import hexlet.code.app.dto.TaskDto;
+import hexlet.code.app.dto.LabelDto;
+import hexlet.code.app.dto.TaskStatusDto;
 import hexlet.code.app.dto.UserDto;
+import hexlet.code.app.model.TaskStatus;
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
+import hexlet.code.app.repository.TaskStatusRepository;
+import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -17,16 +23,24 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static hexlet.code.app.config.SpringConfig.TEST_PROFILE;
 import static hexlet.code.app.controller.UserController.ID;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
 import static hexlet.code.app.utils.TestUtils.LOGIN;
+import static hexlet.code.app.utils.TestUtils.STATUS_CONTROLLER_PATH;
 import static hexlet.code.app.utils.TestUtils.USER_CONTROLLER_PATH;
+import static hexlet.code.app.utils.TestUtils.TASK_CONTROLLER_PATH;
+import static hexlet.code.app.utils.TestUtils.LABEL_CONTROLLER_PATH;
+import static hexlet.code.app.utils.TestUtils.TEST_USERNAME;
+import static hexlet.code.app.utils.TestUtils.TEST_USERNAME_2;
 import static hexlet.code.app.utils.TestUtils.asJson;
 import static hexlet.code.app.utils.TestUtils.fromJson;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -38,21 +52,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static hexlet.code.app.utils.TestUtils.TEST_USERNAME_2;
-import static hexlet.code.app.utils.TestUtils.TEST_USERNAME;
 
 @AutoConfigureMockMvc
 @ActiveProfiles(TEST_PROFILE)
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfig.class)
-public final class UserControllerTest {
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = AppApplication.class)
+public final class ControllersTests {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
+    private LabelRepository labelRepository;
+
+    @Autowired
     private TestUtils utils;
 
+    /**
+     * Clear the repositories.
+     */
     @AfterEach
     public void clear() {
         utils.tearDown();
@@ -199,6 +219,148 @@ public final class UserControllerTest {
                 .andExpect(status().isForbidden());
 
         assertEquals(2, userRepository.count());
+    }
+
+    // TaskStatus Tests
+    @Test
+    public void crudTaskStatus() throws Exception {
+        utils.perform(get(STATUS_CONTROLLER_PATH))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        utils.regDefaultUser();
+        final User expectedUser = userRepository.findAll().get(0);
+
+        long initialCount = taskStatusRepository.count();
+
+        final var statusDto = new TaskStatusDto("test");
+
+        final var response = utils.perform(
+                        post(STATUS_CONTROLLER_PATH)
+                                .content(asJson(statusDto))
+                                .contentType(APPLICATION_JSON),
+                        expectedUser.getEmail()
+                ).andExpect(status().isCreated())
+                .andReturn()
+                .getResponse();
+
+        final TaskStatus taskStatus = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
+
+        final var newStatusDto = new TaskStatusDto("test2");
+        final var updateRequest = put(
+                STATUS_CONTROLLER_PATH + "/{id}", taskStatus.getId()
+        )
+                .content(asJson(newStatusDto))
+                .contentType(APPLICATION_JSON);
+
+        utils.perform(updateRequest, expectedUser.getEmail()).andExpect(status().isOk());
+
+        utils.perform(delete(STATUS_CONTROLLER_PATH + "/{id}", taskStatus.getId()), expectedUser.getEmail())
+                .andExpect(status().isOk());
+
+        assertEquals(initialCount, taskStatusRepository.count());
+    }
+
+    // Task Tests
+
+    @Test
+    public void crudTaskNotLoggedInError() throws Exception {
+        Exception exception = assertThrows(
+                NoSuchElementException.class, () -> utils.perform(get(TASK_CONTROLLER_PATH))
+        );
+
+        String expectedMessage = "No value present";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        TaskDto testTaskCreationDto = new TaskDto(
+                "Новая задача",
+                "Описание новой задачи",
+                1,
+                1,
+                new HashSet<Long>()
+        );
+
+        assertThrows(
+                NoSuchElementException.class, () -> utils.perform(
+                        post(TASK_CONTROLLER_PATH)
+                                .content(asJson(testTaskCreationDto))
+                                .contentType(APPLICATION_JSON)
+                )
+        );
+    }
+
+    /**
+     * Clear a task.
+     */
+    @Test
+    public void createTask() throws Exception {
+        utils.regDefaultUser();
+        final User expectedUser = userRepository.findAll().get(0);
+
+        final var statusDto = new TaskStatusDto("test");
+
+        utils.perform(
+                post(STATUS_CONTROLLER_PATH)
+                        .content(asJson(statusDto))
+                        .contentType(APPLICATION_JSON),
+                expectedUser.getEmail()
+        ).andExpect(status().isCreated());
+
+        final TaskStatus status = taskStatusRepository.findAll().get(0);
+
+        TaskDto testTaskDto = new TaskDto(
+                "Новая задача",
+                "Описание новой задачи",
+                expectedUser.getId(),
+                status.getId(),
+                new HashSet<Long>()
+        );
+
+//        utils.perform(
+//                post(TASK_CONTROLLER_PATH)
+//                        .content(asJson(testTaskDto))
+//                        .contentType(APPLICATION_JSON),
+//                expectedUser.getEmail()
+//        ).andExpect(status().isCreated());
+
+    }
+
+    // Labels test
+    @Test
+    public void crudLabel() throws Exception {
+        utils.regDefaultUser();
+        final User expectedUser = userRepository.findAll().get(0);
+
+        final var labelDto = new LabelDto("test");
+
+        final var response = utils.perform(
+                        post(LABEL_CONTROLLER_PATH)
+                                .content(asJson(labelDto))
+                                .contentType(APPLICATION_JSON),
+                        expectedUser.getEmail()
+                ).andExpect(status().isCreated())
+                .andReturn()
+                .getResponse();
+
+        final Label label = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
+
+        final var newLabelDto = new LabelDto("test2");
+        final var updateRequest = put(
+                LABEL_CONTROLLER_PATH + "/{id}", label.getId()
+        )
+                .content(asJson(newLabelDto))
+                .contentType(APPLICATION_JSON);
+
+        utils.perform(updateRequest, expectedUser.getEmail()).andExpect(status().isOk());
+
+        utils.perform(delete(LABEL_CONTROLLER_PATH + "/{id}", label.getId()), expectedUser.getEmail())
+                .andExpect(status().isOk());
+
     }
 
 }
