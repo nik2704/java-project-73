@@ -9,6 +9,7 @@ import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.Label;
 import hexlet.code.app.model.User;
+import hexlet.code.app.model.Task;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.LabelRepository;
@@ -25,6 +26,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.NoSuchElementException;
 
 import static hexlet.code.app.config.SpringConfig.TEST_PROFILE;
@@ -234,19 +236,7 @@ public final class ControllersTests {
 
         long initialCount = taskStatusRepository.count();
 
-        final var statusDto = new TaskStatusDto("test");
-
-        final var response = utils.perform(
-                        post(STATUS_CONTROLLER_PATH)
-                                .content(asJson(statusDto))
-                                .contentType(APPLICATION_JSON),
-                        expectedUser.getEmail()
-                ).andExpect(status().isCreated())
-                .andReturn()
-                .getResponse();
-
-        final TaskStatus taskStatus = fromJson(response.getContentAsString(), new TypeReference<>() {
-        });
+        final TaskStatus taskStatus = postNewStatus("test", expectedUser.getEmail());
 
         final var newStatusDto = new TaskStatusDto("test2");
         final var updateRequest = put(
@@ -297,35 +287,43 @@ public final class ControllersTests {
      * Clear a task.
      */
     @Test
-    public void createTask() throws Exception {
+    public void checkTask() throws Exception {
         utils.regDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
 
-        final var statusDto = new TaskStatusDto("test");
+        TaskStatus status1 = postNewStatus("test", expectedUser.getEmail());
+        Label label = postNewLabel("test1", expectedUser.getEmail());
+        Set<Long> labels = new HashSet<>();
+        labels.add(label.getId());
 
-        utils.perform(
-                post(STATUS_CONTROLLER_PATH)
-                        .content(asJson(statusDto))
-                        .contentType(APPLICATION_JSON),
-                expectedUser.getEmail()
-        ).andExpect(status().isCreated());
+        TaskDto testTaskDto = new TaskDto();
+        testTaskDto.setTaskStatusId(status1.getId());
+        testTaskDto.setName("Новая задача");
+        testTaskDto.setDescription("Описание новой задачи");
+        testTaskDto.setLabelIds(labels);
 
-        final TaskStatus status = taskStatusRepository.findAll().get(0);
+        Task task = postNewTask(testTaskDto, expectedUser.getEmail());
 
-        TaskDto testTaskDto = new TaskDto(
-                "Новая задача",
-                "Описание новой задачи",
-                expectedUser.getId(),
-                status.getId(),
-                new HashSet<Long>()
-        );
+        assertEquals(task.getAuthor().getId(), expectedUser.getId());
+        assertEquals(task.getTaskStatus().getId(), status1.getId());
 
-//        utils.perform(
-//                post(TASK_CONTROLLER_PATH)
-//                        .content(asJson(testTaskDto))
-//                        .contentType(APPLICATION_JSON),
-//                expectedUser.getEmail()
-//        ).andExpect(status().isCreated());
+        List<Task> taskList = getAllTasks(TASK_CONTROLLER_PATH, expectedUser.getEmail());
+        assertThat(taskList).hasSize(1);
+
+        TaskStatus status2 = postNewStatus("test2", expectedUser.getEmail());
+
+        label = postNewLabel("test2", expectedUser.getEmail());
+        labels = new HashSet<>();
+        labels.add(label.getId());
+
+        testTaskDto.setTaskStatusId(status2.getId());
+        testTaskDto.setName("Новая задача2");
+        testTaskDto.setDescription("Описание новой задачи2");
+        testTaskDto.setLabelIds(labels);
+
+        String newQueryStr = TASK_CONTROLLER_PATH + "?taskStatus=" + status2.getId();
+
+        taskList = getAllTasks(newQueryStr, expectedUser.getEmail());
 
     }
 
@@ -335,19 +333,7 @@ public final class ControllersTests {
         utils.regDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
 
-        final var labelDto = new LabelDto("test");
-
-        final var response = utils.perform(
-                        post(LABEL_CONTROLLER_PATH)
-                                .content(asJson(labelDto))
-                                .contentType(APPLICATION_JSON),
-                        expectedUser.getEmail()
-                ).andExpect(status().isCreated())
-                .andReturn()
-                .getResponse();
-
-        final Label label = fromJson(response.getContentAsString(), new TypeReference<>() {
-        });
+        Label label = postNewLabel("test", expectedUser.getEmail());
 
         final var newLabelDto = new LabelDto("test2");
         final var updateRequest = put(
@@ -363,4 +349,67 @@ public final class ControllersTests {
 
     }
 
+    private Task postNewTask(TaskDto dto, String userName) throws Exception {
+        final var response = utils.perform(
+                post(TASK_CONTROLLER_PATH)
+                        .content(asJson(dto))
+                        .contentType(APPLICATION_JSON),
+                userName
+        ).andExpect(status().isCreated())
+                .andReturn()
+                .getResponse();
+
+        Task task = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
+
+        return task;
+    }
+
+
+    public List<Task> getAllTasks(String queryStr, String userName) throws Exception {
+        final var response = utils.perform(get(queryStr), userName)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        final List<Task> tasks = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
+
+        return tasks;
+    }
+    private Label postNewLabel(String txt, String userName) throws Exception {
+        final var labelDto = new LabelDto(txt);
+
+        final var response = utils.perform(
+                        post(LABEL_CONTROLLER_PATH)
+                                .content(asJson(labelDto))
+                                .contentType(APPLICATION_JSON),
+                        userName
+                ).andExpect(status().isCreated())
+                .andReturn()
+                .getResponse();
+
+        Label label = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
+
+        return label;
+    }
+
+    private TaskStatus postNewStatus(String txt, String userName) throws Exception {
+        final var labelDto = new LabelDto(txt);
+
+        final var response = utils.perform(
+                        post(STATUS_CONTROLLER_PATH)
+                                .content(asJson(labelDto))
+                                .contentType(APPLICATION_JSON),
+                        userName
+                ).andExpect(status().isCreated())
+                .andReturn()
+                .getResponse();
+
+        TaskStatus status = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
+
+        return status;
+    }
 }

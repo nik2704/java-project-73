@@ -60,11 +60,6 @@ public class TestUtils {
 
     @Autowired
     private TaskRepository taskRepository;
-//    @Autowired
-//    private PostCommentRepository postCommentRepository;
-//
-//    @Autowired
-//    private PostRepository postRepository;
 
     @Autowired
     private JWTHelper jwtHelper;
@@ -73,8 +68,6 @@ public class TestUtils {
      * Delete repositories.
      */
     public void tearDown() {
-//        postCommentRepository.deleteAll();
-//        postRepository.deleteAll();
         userRepository.deleteAll();
         taskRepository.deleteAll();
     }
