@@ -60,6 +60,7 @@ public class UserController {
      * Get lis of users.
      * @return      List of Users
      */
+    @Operation(summary = "Get list of Users")
     @ApiResponses(@ApiResponse(responseCode = "200", content =
         @Content(schema = @Schema(implementation = User.class))
         ))
@@ -75,6 +76,7 @@ public class UserController {
      * @param       id id of a User
      * @return      object User
      */
+    @Operation(summary = "Get a User by Id")
     @ApiResponses(@ApiResponse(responseCode = "200"))
     @GetMapping(ID)
     public User getUserById(@PathVariable final Long id) {
@@ -88,6 +90,11 @@ public class UserController {
      * @return      new User
      */
     @PutMapping(ID)
+    @Operation(summary = "Update a User")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated"),
+            @ApiResponse(responseCode = "404", description = "User with that id not found")
+    })
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public User update(@PathVariable final long id, @RequestBody @Valid final UserDto dto) {
         return userService.updateUser(id, dto);
@@ -98,6 +105,11 @@ public class UserController {
      * @param       id user id
      */
     @DeleteMapping(ID)
+    @Operation(summary = "Delete a User")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deleted"),
+            @ApiResponse(responseCode = "404", description = "User with that id not found")
+    })
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void delete(@PathVariable final long id) {
         userRepository.deleteById(id);

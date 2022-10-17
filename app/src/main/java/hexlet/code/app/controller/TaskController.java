@@ -62,6 +62,7 @@ public class TaskController {
      * @param predicate predicate will be created automatically by usin the query string
      * @return      List of Tasks
      */
+    @Operation(summary = "Get list of tasks")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Task.class)))
     })
@@ -75,6 +76,7 @@ public class TaskController {
      * @param       id id of a Task
      * @return      object Task
      */
+    @Operation(summary = "Get task by Id")
     @ApiResponses(@ApiResponse(responseCode = "200"))
     @GetMapping(ID)
     public Task getTaskById(@PathVariable final Long id) {
@@ -87,6 +89,11 @@ public class TaskController {
      * @param       dto new task data
      * @return      new Task
      */
+    @Operation(summary = "Update a task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task updated"),
+            @ApiResponse(responseCode = "404", description = "Task with that id not found")
+    })
     @PutMapping(ID)
     public Task update(@PathVariable final long id, @RequestBody @Valid final TaskDto dto) {
         return taskService.updateTask(id, dto);
@@ -96,6 +103,11 @@ public class TaskController {
      * Delete of a user.
      * @param       id user id
      */
+    @Operation(summary = "Delete a task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task deleted"),
+            @ApiResponse(responseCode = "404", description = "Task with that id not found")
+    })
     @DeleteMapping(ID)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void delete(@PathVariable final long id) {

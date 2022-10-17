@@ -43,7 +43,7 @@ public class TaskStatusController {
      * @param       dto status is being added
      * @return      new Status
      */
-    @Operation(summary = "Create new status")
+    @Operation(summary = "Create new Task Status")
     @ApiResponse(responseCode = "201", description = "Status created")
     @PostMapping
     @ResponseStatus(CREATED)
@@ -55,6 +55,7 @@ public class TaskStatusController {
      * Get lis of statuses.
      * @return      List of Statuses
      */
+    @Operation(summary = "Get list of Task Statuses")
     @ApiResponses(@ApiResponse(responseCode = "200", content =
         @Content(schema = @Schema(implementation = TaskStatus.class))
         ))
@@ -70,6 +71,7 @@ public class TaskStatusController {
      * @param       id id of a Status
      * @return      object Status
      */
+    @Operation(summary = "Get Status by Id")
     @ApiResponses(@ApiResponse(responseCode = "200"))
     @GetMapping(ID)
     public TaskStatus getStatusById(@PathVariable final Long id) {
@@ -82,6 +84,11 @@ public class TaskStatusController {
      * @param       dto new status data
      * @return      new Status
      */
+    @Operation(summary = "Update a Task Status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task Status updated"),
+            @ApiResponse(responseCode = "404", description = "Task Status with that id not found")
+    })
     @PutMapping(ID)
     public TaskStatus update(@PathVariable final long id, @RequestBody @Valid final TaskStatusDto dto) {
         return statusService.updateStatus(id, dto);
@@ -91,6 +98,11 @@ public class TaskStatusController {
      * Delete of a status.
      * @param       id status id
      */
+    @Operation(summary = "Delete a Task Status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task Status deleted"),
+            @ApiResponse(responseCode = "404", description = "Task Status with that id not found")
+    })
     @DeleteMapping(ID)
     public void delete(@PathVariable final long id) {
         taskStatusRepository.deleteById(id);

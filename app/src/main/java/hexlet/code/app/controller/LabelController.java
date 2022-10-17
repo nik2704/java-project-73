@@ -55,6 +55,7 @@ public class LabelController {
      * Get lis of labels.
      * @return      List of Statuses
      */
+    @Operation(summary = "Get list of labels")
     @ApiResponses(@ApiResponse(responseCode = "200", content =
         @Content(schema = @Schema(implementation = Label.class))
         ))
@@ -70,6 +71,7 @@ public class LabelController {
      * @param       id id of a Label
      * @return      object Label
      */
+    @Operation(summary = "Find label by Id")
     @ApiResponses(@ApiResponse(responseCode = "200"))
     @GetMapping(ID)
     public Label getLabelById(@PathVariable final Long id) {
@@ -82,6 +84,11 @@ public class LabelController {
      * @param       dto new label data
      * @return      new Label
      */
+    @Operation(summary = "Update a label")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Label updated"),
+            @ApiResponse(responseCode = "404", description = "Label with that id not found")
+    })
     @PutMapping(ID)
     public Label update(@PathVariable final long id, @RequestBody @Valid final LabelDto dto) {
         return labelService.updateLabel(id, dto);
@@ -91,6 +98,11 @@ public class LabelController {
      * Delete of a label.
      * @param       id label id
      */
+    @Operation(summary = "Delete a label")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Label deleted"),
+            @ApiResponse(responseCode = "404", description = "Label with that id not found")
+    })
     @DeleteMapping(ID)
     public void delete(@PathVariable final long id) {
         labelRepository.deleteById(id);
