@@ -3,6 +3,8 @@ server:
 
 base-url: /api
 
+rollbar_token: 27d9e74871a04ed1b2edb0062656b928
+
 spring:
   application:
     name: taskManager
