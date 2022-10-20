@@ -84,26 +84,26 @@ public class User {
      */
     @PreRemove
     public void checkTasksAssociationBeforeRemoval() {
-        if (stopDeletion()) {
+        if (!this.tasksLinkedAsExecutor.isEmpty()) {
             throw new RuntimeException("Can't remove a user that has Tasks linked.");
         }
     }
 
-    private boolean stopDeletion() {
-        if (this.tasksLinkedAsExecutor != null) {
-            if (this.tasksLinkedAsExecutor.size() > 0) {
-                return true;
-            }
-        } else  {
-            if (this.tasksLinkedAsAuthor != null) {
-                if (this.tasksLinkedAsAuthor.size() > 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+//    private boolean stopDeletion() {
+//        if (this.tasksLinkedAsExecutor != null) {
+//            if (this.tasksLinkedAsExecutor.size() > 0) {
+//                return true;
+//            }
+//        } else  {
+//            if (this.tasksLinkedAsAuthor != null) {
+//                if (this.tasksLinkedAsAuthor.size() > 0) {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
 //    /**
 //     * The method is for prevention of a user deletion when he has tasks associated with.
 //     */
