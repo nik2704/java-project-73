@@ -6,7 +6,6 @@ build/
 !**/src/test/**/build/
 *.mv.db
 *.trace.db
-gradlew*
 
 ### STS ###
 .apt_generated
