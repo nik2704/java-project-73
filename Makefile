@@ -1,39 +1,63 @@
-.DEFAULT_GOAL := build-run
+setup:
+	gradle wrapper --gradle-version 7.4
 
 clean:
-	make -C app clean
+	./gradlew clean
 
 build:
-	make -C app build
-
-install:
-	make -C app install
-
-run-dist:
-	make -C run-dist
+	./gradlew clean build
 
 start:
-	make -C app start
+	./gradlew bootRun --args='--spring.profiles.active=dev'
 
 start-prod:
-	make -C app start-prod
+	./gradlew bootRun --args='--spring.profiles.active=prod'
 
-test:
-	make -C app test
+install:
+	./gradlew install
 
-report:
-	make -C app report
-
-lint:
-	make -C app lint
-
-update-deps:
-	make -C app update-deps
+start-dist:
+	./build/install/app/bin/app
 
 generate-migrations:
-	make -C app generate-migrations
+	gradle diffChangeLog
 
-build-run: build run
+lint:
+	./gradlew checkstyleMain checkstyleTest
+
+test:
+	./gradlew test
+
+report:
+	./gradlew jacocoTestReport
+
+check-updates:
+	./gradlew dependencyUpdates
 
 .PHONY: build
 
+#setup:
+#	gradle wrapper --gradle-version 7.4
+#
+#clean:
+#	./app/gradlew clean
+#
+#build:
+#	./app/gradlew clean build
+#
+#run:
+#	./app/gradlew run
+#
+#lint:
+#	./app/gradlew checkstyleMain
+#
+#install: clean
+#	./app/gradlew install
+#
+#run-dist:
+#	./app/build/install/app/bin/app
+#
+#check-updates:
+#	./app/gradlew dependencyUpdates
+#
+#.PHONY: build

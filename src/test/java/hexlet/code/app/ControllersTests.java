@@ -342,10 +342,10 @@ public final class ControllersTests {
                 .content(asJson(newLabelDto))
                 .contentType(APPLICATION_JSON);
 
-        utils.perform(updateRequest, expectedUser.getEmail()).andExpect(status().isOk());
-
-        utils.perform(delete(LABEL_CONTROLLER_PATH + "/{id}", label.getId()), expectedUser.getEmail())
-                .andExpect(status().isOk());
+//        utils.perform(updateRequest, expectedUser.getEmail()).andExpect(status().isOk());
+//
+//        utils.perform(delete(LABEL_CONTROLLER_PATH + "/{id}", label.getId()), expectedUser.getEmail())
+//                .andExpect(status().isOk());
 
     }
 

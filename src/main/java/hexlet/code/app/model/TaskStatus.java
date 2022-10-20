@@ -15,7 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.PreRemove;
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -27,12 +29,20 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Table(name = "statuses")
 @NoArgsConstructor
 public class TaskStatus {
+    private static final int MIN_V = 1;
+    private static final int MAX_V = 1_000;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank
+    @Size(min = MIN_V, max = MAX_V)
+    @Column(unique = true)
     private String name;
+
+    public TaskStatus(final Long idValue) {
+        this.id = idValue;
+    }
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)
