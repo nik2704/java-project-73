@@ -322,6 +322,7 @@ public final class ControllersTests {
     }
 
     // Labels test
+
     @Test
     public void crudLabel() throws Exception {
         utils.regDefaultUser();
