@@ -197,7 +197,6 @@ public final class ControllersTests {
 
         assertEquals(0, userRepository.count());
     }
-
     @Test
     public void deleteUserFails() throws Exception {
         utils.regDefaultUser();
