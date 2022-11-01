@@ -28,12 +28,12 @@ import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.junit.jupiter.api.Assertions.assertNull;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -154,11 +154,11 @@ public class UserControllerIT {
                 .content(asJson(userDto))
                 .contentType(APPLICATION_JSON);
 
-//        testUtils.perform(updateRequest, TEST_USERNAME).andExpect(status().isOk());
-//
-//        assertTrue(userRepository.existsById(userId));
-//        assertNull(userRepository.findByEmail(TEST_USERNAME).orElse(null));
-//        assertNotNull(userRepository.findByEmail(TEST_USERNAME_2).orElse(null));
+        testUtils.perform(updateRequest, TEST_USERNAME).andExpect(status().isOk());
+
+        assertTrue(userRepository.existsById(userId));
+        assertNull(userRepository.findByEmail(TEST_USERNAME).orElse(null));
+        assertNotNull(userRepository.findByEmail(TEST_USERNAME_2).orElse(null));
     }
 
     @Test
@@ -178,35 +178,35 @@ public class UserControllerIT {
         testUtils.performWithToken(updateRequest, token).andExpect(status().isOk());
     }
 
-//    @Test
-//    public void deleteUser() throws Exception {
-//        utils.regDefaultUser();
-//
-//        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
-//
-//        utils.perform(delete(USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME)
-//                .andExpect(status().isOk());
-//
-//        assertEquals(0, userRepository.count());
-//    }
+    @Test
+    public void deleteUser() throws Exception {
+        testUtils.regDefaultUser();
 
-//    @Disabled("For now active only positive tests")
-//    @Test
-//    public void deleteUserFails() throws Exception {
-//        utils.regDefaultUser();
-//        utils.regUser(new UserDto(
-//                TEST_USERNAME_2,
-//                "fname",
-//                "lname",
-//                "pwd"
-//        ));
-//
-//        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
-//
-//        utils.perform(delete(USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME_2)
-//                .andExpect(status().isForbidden());
-//
-//        assertEquals(2, userRepository.count());
-//    }
+        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
+
+        testUtils.perform(delete(USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME)
+                .andExpect(status().isOk());
+
+        assertEquals(0, userRepository.count());
+    }
+
+    @Disabled("For now active only positive tests")
+    @Test
+    public void deleteUserFails() throws Exception {
+        testUtils.regDefaultUser();
+        testUtils.regUser(new UserDto(
+                TEST_USERNAME_2,
+                "fname",
+                "lname",
+                "pwd"
+        ));
+
+        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
+
+        testUtils.perform(delete(USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME_2)
+                .andExpect(status().isForbidden());
+
+        assertEquals(2, userRepository.count());
+    }
 
 }
