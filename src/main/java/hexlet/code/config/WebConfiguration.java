@@ -1,7 +1,5 @@
 package hexlet.code.config;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -9,15 +7,21 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
+import java.io.IOException;
+
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
     private final String baseApiPath;
 
-    public WebConfiguration(@Value("/api") String baseApiPath) {
-        this.baseApiPath = baseApiPath;
+    public WebConfiguration(@Value("${base-url}") String baseApiPathVar) {
+        this.baseApiPath = baseApiPathVar;
     }
 
+    /**
+     * The base method of adding resource handlers.
+     * @param       registry is being added (of type ResourceHandlerRegistry)
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
