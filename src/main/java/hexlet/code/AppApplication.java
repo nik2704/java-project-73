@@ -12,14 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 @SecurityScheme(name = "javainuseapi", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class AppApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(AppApplication.class, args);
     }
 
-    /**
-     * The base method of adding resource handlers.
-     * @return       value of type BCryptPasswordEncoder
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

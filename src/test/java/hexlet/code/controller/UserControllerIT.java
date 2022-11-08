@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import hexlet.code.config.SpringConfigIT;
+import hexlet.code.config.SpringConfigForIT;
 import hexlet.code.dto.LoginDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
@@ -18,9 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static hexlet.code.config.SpringConfigIT.TEST_PROFILE;
-import static hexlet.code.config.SpringConfigIT.LOGIN;
+import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
 import static hexlet.code.controller.UserController.ID;
+import static hexlet.code.utils.TestUtils.LOGIN;
 import static hexlet.code.utils.TestUtils.USER_CONTROLLER_PATH;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME_2;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles(TEST_PROFILE)
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigIT.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigForIT.class)
 
 public class UserControllerIT {
 

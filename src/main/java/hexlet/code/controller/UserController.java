@@ -104,16 +104,17 @@ public class UserController {
      * Delete of a user.
      * @param       id user id
      */
-    @DeleteMapping(ID)
     @Operation(summary = "Delete a User")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deleted"),
             @ApiResponse(responseCode = "404", description = "User with that id not found")
     })
+    @DeleteMapping(ID)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void delete(@PathVariable final long id) {
         userRepository.deleteById(id);
     }
+
 
 }
 

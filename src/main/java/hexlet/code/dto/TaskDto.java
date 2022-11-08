@@ -21,10 +21,10 @@ public class TaskDto {
 
     private String description;
 
-    private long executorId;
+    private Long executorId;
 
     @NotNull
-    private long taskStatusId;
+    private Long taskStatusId;
 
     private Set<Long> labelIds;
 }

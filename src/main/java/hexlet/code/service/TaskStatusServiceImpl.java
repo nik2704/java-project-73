@@ -14,11 +14,6 @@ public class TaskStatusServiceImpl implements TaskStatusService {
 
     private final TaskStatusRepository taskStatusRepository;
 
-    /**
-     * The base method of adding status.
-     * @param       statusDto - status is being created
-     * @return       new status
-     */
     @Override
     public TaskStatus createNewStatus(TaskStatusDto statusDto) {
         final TaskStatus taskStatus = new TaskStatus();
@@ -26,12 +21,6 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         return taskStatusRepository.save(taskStatus);
     }
 
-    /**
-     * The base method of updating status.
-     * @param       id - status id
-     * @param       statusDto - new status data
-     * @return       updated status
-     */
     @Override
     public TaskStatus updateStatus(long id, TaskStatusDto statusDto) {
         final TaskStatus taskStatusToUpdate = taskStatusRepository.findById(id).get();
