@@ -17,10 +17,6 @@ public class AppApplication {
         SpringApplication.run(AppApplication.class, args);
     }
 
-    /**
-     * The base method of adding resource handlers.
-     * @return       value of type BCryptPasswordEncoder
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

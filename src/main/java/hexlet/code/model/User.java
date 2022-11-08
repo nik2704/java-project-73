@@ -1,6 +1,7 @@
 package hexlet.code.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,11 +30,12 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Setter
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank
     private String firstName;
@@ -54,13 +56,6 @@ public class User {
 
     public User(final Long userId) {
         this.id = userId;
-    }
-    public User(final Long userId, String firstNameValue, String lastNameValue, String emailValue, String pwdValue) {
-        this.id = userId;
-        this.firstName = firstNameValue;
-        this.lastName = lastNameValue;
-        this.email = emailValue;
-        this.password = pwdValue;
     }
 
     @JsonIgnore

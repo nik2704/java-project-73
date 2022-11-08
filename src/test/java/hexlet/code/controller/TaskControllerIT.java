@@ -291,7 +291,7 @@ public class TaskControllerIT {
     }
 
     private ResultActions createTask(final TaskDto task) throws Exception {
-        final var request = post("/tasks")
+        final var request = post(TASK_CONTROLLER_PATH)
                 .content(asJson(task))
                 .contentType(APPLICATION_JSON);
 
