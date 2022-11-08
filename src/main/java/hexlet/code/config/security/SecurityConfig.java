@@ -1,12 +1,9 @@
-package hexlet.code.config;
-
+package hexlet.code.config.security;
 
 import hexlet.code.component.JWTHelper;
-
-import java.util.List;
-
 import hexlet.code.filter.JWTAuthenticationFilter;
 import hexlet.code.filter.JWTAuthorizationFilter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,15 +21,9 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import static hexlet.code.controller.LabelController.LABEL_CONTROLLER_PATH;
-import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
-import static hexlet.code.controller.TaskStatusController.STATUS_CONTROLLER_PATH;
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpMethod.DELETE;
-
 
 @Configuration
 @EnableWebSecurity
@@ -41,65 +32,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String LOGIN = "/login";
 
-    public static final List<GrantedAuthority> DEFAULT_AUTHORITIES = List.of(new SimpleGrantedAuthority("USER"));
+    public static final List<GrantedAuthority>  DEFAULT_AUTHORITIES = List.of(new SimpleGrantedAuthority("USER"));
 
+    //Note: Сейчас разрешены:
+    // - GET('/api/users')
+    // - POST('/api/users')
+    // - POST('/api/login')
+    // - все запросы НЕ начинающиеся на '/api'
     private final RequestMatcher publicUrls;
-
-    private final RequestMatcher authenticatedUrls;
     private final RequestMatcher loginRequest;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JWTHelper jwtHelper;
 
     public SecurityConfig(@Value("${base-url}") final String baseUrl,
-                          final UserDetailsService userDetailsServiceValue,
-                          final PasswordEncoder passwordEncoderValue, final JWTHelper jwtHelperValue) {
+                          final UserDetailsService userDetailsService,
+                          final PasswordEncoder passwordEncoder, final JWTHelper jwtHelper) {
         this.loginRequest = new AntPathRequestMatcher(baseUrl + LOGIN, POST.toString());
-
         this.publicUrls = new OrRequestMatcher(
                 loginRequest,
                 new AntPathRequestMatcher(baseUrl + USER_CONTROLLER_PATH, POST.toString()),
                 new AntPathRequestMatcher(baseUrl + USER_CONTROLLER_PATH, GET.toString()),
-                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH, GET.toString()),
                 new NegatedRequestMatcher(new AntPathRequestMatcher(baseUrl + "/**"))
         );
-
-        this.authenticatedUrls = new OrRequestMatcher(
-                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", GET.toString()),
-                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", POST.toString()),
-                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", PUT.toString()),
-                new AntPathRequestMatcher(baseUrl + STATUS_CONTROLLER_PATH + "/**", DELETE.toString()),
-
-                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", GET.toString()),
-                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", POST.toString()),
-                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", PUT.toString()),
-                new AntPathRequestMatcher(baseUrl + TASK_CONTROLLER_PATH + "/**", DELETE.toString()),
-
-                new AntPathRequestMatcher(baseUrl + LABEL_CONTROLLER_PATH + "/**", GET.toString()),
-                new AntPathRequestMatcher(baseUrl + LABEL_CONTROLLER_PATH + "/**", POST.toString()),
-                new AntPathRequestMatcher(baseUrl + LABEL_CONTROLLER_PATH + "/**", PUT.toString()),
-                new AntPathRequestMatcher(baseUrl + LABEL_CONTROLLER_PATH + "/**", DELETE.toString())
-        );
-
-        this.userDetailsService = userDetailsServiceValue;
-        this.passwordEncoder = passwordEncoderValue;
-        this.jwtHelper = jwtHelperValue;
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtHelper = jwtHelper;
     }
 
-    /**
-     * The base method of configuring of authentication type (for configuring AuthenticationManager needed).
-     * @param       auth is being configured (of type AuthenticationManagerBuilder)
-     */
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
 
-    /**
-     * The base method of configuring authentication and authorization (Settings of the object HttpSecurity).
-     * @param       http is being configured (of type HttpSecurity)
-     */
     @Override
     public void configure(final HttpSecurity http) throws Exception {
 
@@ -117,7 +83,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(publicUrls).permitAll()
-                .requestMatchers(authenticatedUrls).authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(authenticationFilter)
@@ -126,12 +91,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .logout().disable();
-
-        http.headers().frameOptions().disable();
-
-//        http.exceptionHandling().accessDeniedHandler( (request, response, exception) ->
-//                response.sendError(HttpStatus.UNAUTHORIZED.value(), exception.getMessage()
-//                ));
     }
 
 }

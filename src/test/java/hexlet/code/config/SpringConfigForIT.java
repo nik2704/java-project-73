@@ -9,21 +9,17 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
 
-import static hexlet.code.config.SpringConfigIT.TEST_PROFILE;
+import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
 
 @Configuration
 @Profile(TEST_PROFILE)
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "hexlet.code")
 @PropertySource(value = "classpath:/config/application.yml")
-public class SpringConfigIT {
-    public static final String LOGIN = "/api/login";
+public class SpringConfigForIT {
+
     public static final String TEST_PROFILE = "test";
 
-    /**
-     * Get rest template.
-     * @return      new rest template
-     */
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplateBuilder().build();

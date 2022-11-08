@@ -2,6 +2,7 @@ package hexlet.code.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Table(name = "labels")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Label {
     private static final int MIN_V = 3;
     private static final int MAX_V = 1_000;

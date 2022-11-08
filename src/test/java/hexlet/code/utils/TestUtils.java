@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-//import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
@@ -39,9 +38,8 @@ public class TestUtils {
     public static final String TEST_USERNAME = "email@email.com";
     public static final String TEST_USERNAME_2 = "email2@email.com";
     public static final String USER_CONTROLLER_PATH = "/api/users";
-    public static final String STATUS_CONTROLLER_PATH = "/api/statuses";
+    public static final String TASK_STATUS_CONTROLLER_PATH = "/api/statuses";
     public static final String TASK_CONTROLLER_PATH = "/api/tasks";
-
     public static final String LABEL_CONTROLLER_PATH = "/api/labels";
     public static final String LOGIN = "/api/login";
     public static final String ID = "/{id}";
@@ -184,11 +182,11 @@ public class TestUtils {
         final var taskStatusDto = new TaskStatusDto(txt);
 
         final var response = perform(
-                        MockMvcRequestBuilders.post(TestUtils.STATUS_CONTROLLER_PATH)
-                                .content(TestUtils.asJson(taskStatusDto))
-                                .contentType(APPLICATION_JSON),
-                        userName
-                ).andExpect(status().isCreated())
+                MockMvcRequestBuilders.post(TestUtils.TASK_STATUS_CONTROLLER_PATH)
+                        .content(TestUtils.asJson(taskStatusDto))
+                        .contentType(APPLICATION_JSON),
+                userName
+        ).andExpect(status().isCreated())
                 .andReturn()
                 .getResponse();
 
@@ -208,11 +206,11 @@ public class TestUtils {
         final var labelDto = new LabelDto(txt);
 
         final var response = perform(
-                        MockMvcRequestBuilders.post(TestUtils.LABEL_CONTROLLER_PATH)
-                                .content(TestUtils.asJson(labelDto))
-                                .contentType(APPLICATION_JSON),
-                        userName
-                ).andExpect(status().isCreated())
+                MockMvcRequestBuilders.post(TestUtils.LABEL_CONTROLLER_PATH)
+                        .content(TestUtils.asJson(labelDto))
+                        .contentType(APPLICATION_JSON),
+                userName
+        ).andExpect(status().isCreated())
                 .andReturn()
                 .getResponse();
 

@@ -1,33 +1,32 @@
 package hexlet.code.filter;
 
 import hexlet.code.component.JWTHelper;
+import java.io.IOException;
+import java.util.Optional;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
-
-import static hexlet.code.config.SecurityConfig.DEFAULT_AUTHORITIES;
+import static hexlet.code.config.security.SecurityConfig.DEFAULT_AUTHORITIES;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
 
-public final class JWTAuthorizationFilter extends OncePerRequestFilter {
+public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private static final String BEARER = "Bearer";
 
     private final RequestMatcher publicUrls;
     private final JWTHelper jwtHelper;
 
-    public JWTAuthorizationFilter(final RequestMatcher publicUrlsValue,
-                                  final JWTHelper jwtHelperValue) {
-        this.publicUrls = publicUrlsValue;
-        this.jwtHelper = jwtHelperValue;
+    public JWTAuthorizationFilter(final RequestMatcher publicUrls,
+                                  final JWTHelper jwtHelper) {
+        this.publicUrls = publicUrls;
+        this.jwtHelper = jwtHelper;
     }
 
     @Override
@@ -37,7 +36,7 @@ public final class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
-                                    HttpServletResponse response,
+                                    final HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
 
         final var authToken = Optional.ofNullable(request.getHeader(AUTHORIZATION))
@@ -48,7 +47,8 @@ public final class JWTAuthorizationFilter extends OncePerRequestFilter {
                 .map(Object::toString)
                 .map(this::buildAuthToken)
                 .orElseThrow();
-//() -> new AccessDeniedException("Access denied")
+
+
         SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
     }
