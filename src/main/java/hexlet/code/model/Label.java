@@ -66,8 +66,10 @@ public class Label {
      */
     @PreRemove
     public void checkTasksAssociationBeforeRemoval() {
-        if (this.tasks.size() > 0) {
-            throw new RuntimeException("Can't remove a label that has been linked with tasks.");
+        if (this.tasks != null) {
+            if (this.tasks.size() > 0) {
+                throw new RuntimeException("Can't remove a label that has been linked with tasks.");
+            }
         }
     }
 }
