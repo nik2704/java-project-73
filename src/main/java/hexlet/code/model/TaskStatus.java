@@ -70,8 +70,10 @@ public class TaskStatus {
      */
     @PreRemove
     public void checkTasksAssociationBeforeRemoval() {
-        if (!this.tasks.isEmpty()) {
-            throw new RuntimeException("Can't remove a status that has Tasks.");
+        if (this.tasks != null) {
+            if (!this.tasks.isEmpty()) {
+                throw new RuntimeException("Can't remove a status that has Tasks.");
+            }
         }
     }
 }
