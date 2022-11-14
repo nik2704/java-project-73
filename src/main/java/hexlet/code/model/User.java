@@ -79,8 +79,10 @@ public class User {
      */
     @PreRemove
     public void checkTasksAssociationBeforeRemoval() {
-        if (!this.tasksLinkedAsExecutor.isEmpty()) {
-            throw new RuntimeException("Can't remove a user that has Tasks linked.");
+        if (this.tasksLinkedAsExecutor != null) {
+            if (!this.tasksLinkedAsExecutor.isEmpty()) {
+                throw new RuntimeException("Can't remove a user that has Tasks linked.");
+            }
         }
     }
 
