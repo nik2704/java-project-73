@@ -1,6 +1,5 @@
 package hexlet.code.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
