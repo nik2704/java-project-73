@@ -1,6 +1,5 @@
 package hexlet.code.utils;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
